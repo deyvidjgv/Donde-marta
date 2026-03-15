@@ -28,6 +28,7 @@
       id="vistaLogin"
       class="pantalla-login activa">
       <div class="card-login">
+<<<<<<< HEAD
         <h1>
           <span
             class="material-symbols-rounded"
@@ -64,6 +65,10 @@
         </div>
 
         <!-- PASO 2: Nombre y PIN (se muestra tras elegir rol) -->
+=======
+        <h1>🏠 Domingos Donde Marta</h1>
+        <div id="contenedorLogin"></div>
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
         <div
           id="formNombre"
           style="display: none">
@@ -83,6 +88,7 @@
             style="margin-top: 15px">
             ENTRAR
           </button>
+<<<<<<< HEAD
           <button
             class="btn-cancelar"
             onclick="app.volverSelectorRol()"
@@ -94,6 +100,8 @@
             </span>
             Cambiar rol
           </button>
+=======
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
         </div>
       </div>
     </div>
@@ -110,11 +118,14 @@
         <button
           class="btn-cerrar"
           onclick="app.logout()">
+<<<<<<< HEAD
           <span
             class="material-symbols-rounded"
             style="font-size: 1.1rem; vertical-align: middle">
             logout
           </span>
+=======
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
           Salir
         </button>
       </header>
@@ -125,6 +136,7 @@
           Mesas
         </button>
         <button
+<<<<<<< HEAD
           id="navInventario"
           onclick="app.navegar('inventario')"
           style="display: none">
@@ -134,6 +146,15 @@
         <button
           id="navReporte"
           onclick="app.navegar('reportetotal')">
+=======
+          id="navCocina"
+          onclick="app.navegar('cocina')"
+          style="display: none">
+          <span class="material-symbols-rounded">restaurant_menu</span>
+          Cocina
+        </button>
+        <button onclick="app.navegar('reportetotal')">
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
           <span class="material-symbols-rounded">bar_chart</span>
           Reporte
         </button>
@@ -199,6 +220,7 @@
                 <span class="material-symbols-rounded">local_shipping</span>
                 Llevar ($1000):
               </label>
+<<<<<<< HEAD
               <button
                 onclick="app.decrementarLlevar()"
                 style="padding: 4px; border-radius: 4px">
@@ -208,12 +230,16 @@
                   remove
                 </span>
               </button>
+=======
+              <button onclick="app.decrementarLlevar()">−</button>
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
               <input
                 type="number"
                 id="cantLlevar"
                 value="0"
                 min="0"
                 onchange="app.actualizarTotal()" />
+<<<<<<< HEAD
               <button
                 onclick="app.incrementarLlevar()"
                 style="padding: 4px; border-radius: 4px">
@@ -223,16 +249,26 @@
                   add
                 </span>
               </button>
+=======
+              <button onclick="app.incrementarLlevar()">+</button>
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
             </div>
 
             <h3 id="totalMesa">Total: $0</h3>
             <select
               id="metodoPago"
               onchange="app.onPaymentMethodChange()">
+<<<<<<< HEAD
               <option value="">Pendiente</option>
               <option value="Efectivo">Efectivo</option>
               <option value="Transferencia">Transferencia</option>
               <option value="Mixto">Mixto (Efectivo + Transf.)</option>
+=======
+              <option value="">Pendiente (Cocina)</option>
+              <option value="Efectivo">💵 Efectivo</option>
+              <option value="Transferencia">📱 Transferencia</option>
+              <option value="Mixto">💵+📱 Mixto</option>
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
             </select>
 
             <div
@@ -333,6 +369,31 @@
         </div>
 
         <div
+<<<<<<< HEAD
+=======
+          id="v-cocina"
+          class="modulo"
+          style="display: none">
+          <div style="padding: 15px; text-align: center">
+            <h2
+              style="
+                color: var(--primary);
+                margin: 0 0 15px 0;
+                font-size: 1.3rem;
+              ">
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 2rem; vertical-align: middle">
+                restaurant_menu
+              </span>
+              Monitor de Cocina
+            </h2>
+          </div>
+          <div id="listaCocina"></div>
+        </div>
+
+        <div
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
           id="v-reportetotal"
           class="modulo dashboard-container"
           style="display: none">
@@ -344,10 +405,92 @@
                 Dashboard de Ventas
               </h1>
             </div>
+<<<<<<< HEAD
 
             <div class="dashboard-grid">
               <!-- BLOQUE 1: RESUMEN DE CAJA (FULL WIDTH TOP) -->
               <div id="summaryStats"></div>
+=======
+            <!-- de JGV -->
+            <div class="dashboard-grid">
+              <!-- BLOQUE 1: INVENTARIO -->
+              <div class="dashboard-card inventory-card">
+                <div class="card-header">
+                  <h2 class="card-title">
+                    <span class="material-symbols-rounded">inventory_2</span>
+                    Inventario
+                  </h2>
+                </div>
+
+                <!-- TABS DE INVENTARIO -->
+                <div class="inventory-tabs">
+                  <button
+                    class="inventory-tab-btn active"
+                    id="tab-inv-comida"
+                    onclick="app.switchInventoryTab('comida')">
+                    <span class="material-symbols-rounded">lunch_dining</span>
+                    Comidas
+                  </button>
+                  <button
+                    class="inventory-tab-btn"
+                    id="tab-inv-bebida"
+                    onclick="app.switchInventoryTab('bebida')">
+                    <span class="material-symbols-rounded">local_cafe</span>
+                    Bebidas
+                  </button>
+                </div>
+
+                <!-- SECCIÓN COMIDAS -->
+                <div
+                  id="inv-comida-section"
+                  class="inventory-section active">
+                  <div
+                    class="inventory-list"
+                    id="inventarioComidasList"></div>
+                  <div class="add-product-form">
+                    <input
+                      type="text"
+                      id="newNombreComida"
+                      placeholder="Nombre comida..." />
+                    <input
+                      type="number"
+                      id="newPrecioComida"
+                      placeholder="Precio..." />
+                    <button
+                      class="btn-add-product"
+                      onclick="app.crearItemSeguro('comida')">
+                      <span class="material-symbols-rounded">add_circle</span>
+                      AÑADIR COMIDA
+                    </button>
+                  </div>
+                </div>
+
+                <!-- SECCIÓN BEBIDAS -->
+                <div
+                  id="inv-bebida-section"
+                  class="inventory-section">
+                  <div
+                    class="inventory-list"
+                    id="inventarioBebidasList"></div>
+                  <div class="add-product-form add-product-form-bebida">
+                    <input
+                      type="text"
+                      id="newNombreBebida"
+                      placeholder="Nombre bebida..." />
+                    <input
+                      type="number"
+                      id="newPrecioBebida"
+                      placeholder="Precio..." />
+                    <button
+                      class="btn-add-product"
+                      onclick="app.crearItemSeguro('bebida')">
+                      <span class="material-symbols-rounded">add_circle</span>
+                      AÑADIR BEBIDA
+                    </button>
+                  </div>
+                </div>
+              </div>
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
 
               <!-- BLOQUE 2: TOP VENTAS POR CATEGORÍA -->
               <div class="dashboard-card top-sales-card">
@@ -395,6 +538,7 @@
                 </div>
               </div>
 
+<<<<<<< HEAD
               <!-- BLOQUE 3: ANÁLISIS (GRÁFICO) -->
               <div class="dashboard-card chart-card">
                 <div class="card-header">
@@ -419,6 +563,49 @@
                   <canvas id="analysisChart"></canvas>
                 </div>
               </div>
+=======
+              <!-- BLOQUE 3: RESUMEN DE CAJA (FULL WIDTH) -->
+              <div class="dashboard-card summary-card summary-card-full">
+                <div class="card-header">
+                  <h2 class="card-title">
+                    <span class="material-symbols-rounded">
+                      account_balance_wallet
+                    </span>
+                    Resumen de Caja
+                  </h2>
+                </div>
+                <div
+                  class="summary-stats-horizontal"
+                  id="summaryStats"></div>
+              </div>
+            </div>
+
+            <!-- GRÁFICOS INTERCAMBIABLES -->
+            <div class="dashboard-card chart-card">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <span class="material-symbols-rounded">bar_chart</span>
+                  Análisis
+                </h2>
+                <div class="chart-tabs">
+                  <button
+                    class="chart-tab-btn active"
+                    onclick="app.mostrarGraficoMetodosPago()">
+                    <span class="material-symbols-rounded">payment</span>
+                    Métodos de Pago
+                  </button>
+                  <button
+                    class="chart-tab-btn"
+                    onclick="app.mostrarGraficoProductos()">
+                    <span class="material-symbols-rounded">local_dining</span>
+                    Productos Top 7
+                  </button>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="analysisChart"></canvas>
+              </div>
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
             </div>
 
             <!-- BOTONES DE ACCIÓN -->
@@ -451,6 +638,7 @@
               class="transactions-list"
               id="listaVentas"></div>
           </div>
+<<<<<<< HEAD
         </div>
 
         <div
@@ -572,6 +760,10 @@
               </div>
             </div>
           </div>
+=======
+
+
+>>>>>>> 881e2bc06ea0e6ab1d0c06ee78e6adaffd860bb3
         </div>
       </main>
 
