@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Domingos Donde Marta</title>
+    <link
+      rel="stylesheet"
+      href="css/style.css" />
+    <link
+      rel="manifest"
+      href="manifest.json" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet" />
+  </head>
+  <body>
+    <div
+      id="vistaLogin"
+      class="pantalla-login activa">
+      <div class="card-login">
+        <h1>
+          <span
+            class="material-symbols-rounded"
+            style="font-size: 2rem; vertical-align: middle">
+            storefront
+          </span>
+          Domingos Donde Marta
+        </h1>
+
+        <!-- PASO 1: Selector de Rol (siempre visible, cualquier dispositivo) -->
+        <div id="contenedorLogin">
+          <p
+            style="
+              color: var(--dashboard-text-light);
+              margin-bottom: 20px;
+              font-size: 0.95rem;
+            ">
+            Selecciona tu rol para ingresar
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <button
+              class="btn-rol"
+              onclick="app.prepararIngreso('admin')">
+              <span class="material-symbols-rounded">admin_panel_settings</span>
+              Administrador
+            </button>
+            <button
+              class="btn-rol"
+              onclick="app.prepararIngreso('mesero')">
+              <span class="material-symbols-rounded">person</span>
+              Mesero
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 2: Nombre y PIN (se muestra tras elegir rol) -->
+        <div
+          id="formNombre"
+          style="display: none">
+          <p id="txtInstruccion">Ingrese su nombre:</p>
+          <input
+            type="text"
+            id="loginNombre"
+            placeholder="Nombre..." />
+          <input
+            type="password"
+            id="loginPin"
+            placeholder="PIN"
+            style="display: none; margin-top: 10px" />
+          <button
+            class="btn-confirmar"
+            onclick="app.ejecutarLogin()"
+            style="margin-top: 15px">
+            ENTRAR
+          </button>
+          <button
+            class="btn-cancelar"
+            onclick="app.volverSelectorRol()"
+            style="margin-top: 8px; font-size: 0.85rem">
+            <span
+              class="material-symbols-rounded"
+              style="font-size: 1rem">
+              arrow_back
+            </span>
+            Cambiar rol
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="appBody"
+      style="display: none">
+      <header>
+        <div class="user-data">
+          <span id="txtTag"></span>
+          :
+          <b id="txtNombre"></b>
+        </div>
+        <button
+          class="btn-cerrar"
+          onclick="app.logout()">
+          <span
+            class="material-symbols-rounded"
+            style="font-size: 1.1rem; vertical-align: middle">
+            logout
+          </span>
+          Salir
+        </button>
+      </header>
+
+      <nav class="main-nav">
+        <button onclick="app.navegar('comanda')">
+          <span class="material-symbols-rounded">shopping_cart</span>
+          Mesas
+        </button>
+        <button
+          id="navInventario"
+          onclick="app.navegar('inventario')"
+          style="display: none">
+          <span class="material-symbols-rounded">inventory_2</span>
+          Inventario
+        </button>
+        <button
+          id="navReporte"
+          onclick="app.navegar('reportetotal')">
+          <span class="material-symbols-rounded">bar_chart</span>
+          Reporte
+        </button>
+      </nav>
+
+      <main>
+        <div
+          id="v-comanda"
+          class="modulo">
+          <div style="padding: 15px; text-align: center">
+            <h2
+              style="
+                color: var(--primary);
+                margin: 0 0 15px 0;
+                font-size: 1.3rem;
+              ">
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 2rem; vertical-align: middle">
+                shopping_cart
+              </span>
+              Mesas
+            </h2>
+          </div>
+          <div
+            id="gridMesas"
+            class="grid-mesas"></div>
+        </div>
+
+        <div
+          id="modalMesa"
+          class="modal"
+          style="display: none">
+          <div class="modal-content">
+            <h2 id="mesaNum"></h2>
+            <div class="tabs-cat">
+              <button
+                id="tab-comida"
+                onclick="app.setCat('comida')">
+                <span class="material-symbols-rounded">restaurant</span>
+                Comida
+              </button>
+              <button
+                id="tab-bebida"
+                onclick="app.setCat('bebida')">
+                <span class="material-symbols-rounded">local_cafe</span>
+                Bebidas
+              </button>
+            </div>
+            <div
+              id="subCategoryTabs"
+              class="tabs-cat"
+              style="display: none; margin-top: 10px; gap: 5px"></div>
+            <div
+              id="listaItems"
+              class="grid-productos"></div>
+            <div
+              id="itemsCarrito"
+              style="margin-top: 20px"></div>
+
+            <div class="llevar-box">
+              <label>
+                <span class="material-symbols-rounded">local_shipping</span>
+                Llevar ($1000):
+              </label>
+              <button
+                onclick="app.decrementarLlevar()"
+                style="padding: 4px; border-radius: 4px">
+                <span
+                  class="material-symbols-rounded"
+                  style="font-size: 1.2rem">
+                  remove
+                </span>
+              </button>
+              <input
+                type="number"
+                id="cantLlevar"
+                value="0"
+                min="0"
+                onchange="app.actualizarTotal()" />
+              <button
+                onclick="app.incrementarLlevar()"
+                style="padding: 4px; border-radius: 4px">
+                <span
+                  class="material-symbols-rounded"
+                  style="font-size: 1.2rem">
+                  add
+                </span>
+              </button>
+            </div>
+
+            <h3 id="totalMesa">Total: $0</h3>
+            <select
+              id="metodoPago"
+              onchange="app.onPaymentMethodChange()">
+              <option value="">Pendiente</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Transferencia">Transferencia</option>
+              <option value="Mixto">Mixto (Efectivo + Transf.)</option>
+            </select>
+
+            <div
+              id="paymentInputs"
+              style="margin-top: 10px">
+              <div
+                id="efectivoBox"
+                style="display: none; margin-top: 8px">
+                <label>Recibido:</label>
+                <input
+                  type="number"
+                  id="cashReceived"
+                  min="0"
+                  step="1"
+                  value="0"
+                  oninput="app.updateChange()" />
+                <div
+                  id="changeDisplay"
+                  style="margin-top: 6px; color: #0f172a; font-weight: 600">
+                  Cambio: $0
+                </div>
+              </div>
+              <div
+                id="transferBox"
+                style="display: none; margin-top: 8px">
+                <label>Referencia transferencia:</label>
+                <input
+                  type="text"
+                  id="transferRef"
+                  placeholder="Referencia..." />
+                <label style="display: block; margin-top: 6px">
+                  Monto transferencia:
+                </label>
+                <input
+                  type="number"
+                  id="transferAmount"
+                  min="0"
+                  step="1"
+                  value="0"
+                  oninput="app.updateChange()" />
+              </div>
+              <div
+                id="mixedBox"
+                style="display: none; margin-top: 8px">
+                <label>Monto transferencia:</label>
+                <input
+                  type="number"
+                  id="mixedTransferAmount"
+                  min="0"
+                  step="1"
+                  value="0"
+                  oninput="app.updateChange()" />
+                <label style="display: block; margin-top: 6px">
+                  Recibido (efectivo):
+                </label>
+                <input
+                  type="number"
+                  id="mixedCashReceived"
+                  min="0"
+                  step="1"
+                  value="0"
+                  oninput="app.updateChange()" />
+                <div
+                  id="mixedChangeDisplay"
+                  style="margin-top: 6px; color: #0f172a; font-weight: 600">
+                  Cambio: $0
+                </div>
+                <label style="display: block; margin-top: 6px">
+                  Referencia transferencia (opcional):
+                </label>
+                <input
+                  type="text"
+                  id="mixedTransferRef"
+                  placeholder="Referencia..." />
+              </div>
+            </div>
+            <button
+              class="btn-confirmar"
+              onclick="app.guardarPedido()">
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 1.1rem">
+                save
+              </span>
+              Guardar / Pagar
+            </button>
+            <button
+              class="btn-cancelar"
+              onclick="app.cerrarMesa()">
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 1.1rem">
+                close
+              </span>
+              Cerrar
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="v-reportetotal"
+          class="modulo dashboard-container"
+          style="display: none">
+          <!-- DASHBOARD - SOLO ADMIN -->
+          <div class="admin-only-dashboard">
+            <div class="dashboard-header">
+              <h1 class="dashboard-title">
+                <span class="material-symbols-rounded">assessment</span>
+                Dashboard de Ventas
+              </h1>
+            </div>
+
+            <div class="dashboard-grid">
+              <!-- BLOQUE 1: RESUMEN DE CAJA (FULL WIDTH TOP) -->
+              <div id="summaryStats"></div>
+
+              <!-- BLOQUE 2: TOP VENTAS POR CATEGORÍA -->
+              <div class="dashboard-card top-sales-card">
+                <div class="card-header">
+                  <h2 class="card-title">
+                    <span class="material-symbols-rounded">trending_up</span>
+                    Ventas por Producto
+                  </h2>
+                </div>
+
+                <!-- TABS DE VENTAS -->
+                <div class="inventory-tabs">
+                  <button
+                    class="inventory-tab-btn active"
+                    id="tab-sales-comida"
+                    onclick="app.switchSalesTab('comida')">
+                    <span class="material-symbols-rounded">lunch_dining</span>
+                    Comidas
+                  </button>
+                  <button
+                    class="inventory-tab-btn"
+                    id="tab-sales-bebida"
+                    onclick="app.switchSalesTab('bebida')">
+                    <span class="material-symbols-rounded">local_cafe</span>
+                    Bebidas
+                  </button>
+                </div>
+
+                <!-- SECCIÓN COMIDAS -->
+                <div
+                  id="sales-comida-section"
+                  class="sales-section active">
+                  <div
+                    class="category-list"
+                    id="topSalesComidas"></div>
+                </div>
+
+                <!-- SECCIÓN BEBIDAS -->
+                <div
+                  id="sales-bebida-section"
+                  class="sales-section">
+                  <div
+                    class="category-list"
+                    id="topSalesBebidas"></div>
+                </div>
+              </div>
+
+              <!-- BLOQUE 3: ANÁLISIS (GRÁFICO) -->
+              <div class="dashboard-card chart-card">
+                <div class="card-header">
+                  <h2 class="card-title">
+                    <span class="material-symbols-rounded">bar_chart</span>
+                    Análisis
+                  </h2>
+                  <div class="chart-tabs">
+                    <button
+                      class="chart-tab-btn active"
+                      onclick="app.mostrarGraficoMetodosPago()">
+                      <span class="material-symbols-rounded">payment</span>
+                    </button>
+                    <button
+                      class="chart-tab-btn"
+                      onclick="app.mostrarGraficoProductos()">
+                      <span class="material-symbols-rounded">local_dining</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="chart-container">
+                  <canvas id="analysisChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="action-buttons">
+              <button
+                class="btn-primary"
+                onclick="app.generarPDFReporte()">
+                <span class="material-symbols-rounded">download</span>
+                DESCARGAR PDF
+              </button>
+              <button
+                class="btn-danger"
+                onclick="app.limpiarReporteSeguro()">
+                <span class="material-symbols-rounded">delete_forever</span>
+                LIMPIAR REPORTE
+              </button>
+            </div>
+          </div>
+          <!-- de JGV -->
+
+          <!-- HISTORIAL - VISIBLE PARA TODOS (MESERO Y ADMIN) -->
+          <div class="dashboard-card transactions-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <span class="material-symbols-rounded">receipt</span>
+                Historial de Ventas
+              </h2>
+            </div>
+            <div
+              class="transactions-list"
+              id="listaVentas"></div>
+          </div>
+        </div>
+
+        <div
+          id="v-inventario"
+          class="modulo dashboard-container"
+          style="display: none">
+          <div class="admin-only-dashboard">
+            <div class="dashboard-header">
+              <h1 class="dashboard-title">
+                <span class="material-symbols-rounded">inventory_2</span>
+                Gestión de Inventario
+              </h1>
+            </div>
+
+            <div
+              class="dashboard-card inventory-card"
+              style="box-shadow: none; border: none; background: transparent">
+              <!-- TABS DE INVENTARIO -->
+              <div class="inventory-tabs">
+                <button
+                  class="inventory-tab-btn active"
+                  id="tab-inv-comida"
+                  onclick="app.switchInventoryTab('comida')">
+                  <span class="material-symbols-rounded">lunch_dining</span>
+                  Comidas
+                </button>
+                <button
+                  class="inventory-tab-btn"
+                  id="tab-inv-bebida"
+                  onclick="app.switchInventoryTab('bebida')">
+                  <span class="material-symbols-rounded">local_cafe</span>
+                  Bebidas
+                </button>
+              </div>
+
+              <!-- SECCIÓN COMIDAS -->
+              <div
+                id="inv-comida-section"
+                class="inventory-section active">
+                <div
+                  class="inventory-list"
+                  id="inventarioComidasList"></div>
+
+                <div
+                  class="dashboard-card"
+                  style="margin-top: 20px; padding: 20px">
+                  <h3 style="margin-top: 0; color: var(--primary)">
+                    Agregar Nueva Comida
+                  </h3>
+                  <div class="add-product-form">
+                    <input
+                      type="text"
+                      id="newNombreComida"
+                      placeholder="Nombre comida..."
+                      style="margin: 0" />
+                    <select
+                      id="newSubcatComida"
+                      style="margin: 0">
+                      <option value="Platos Fuertes">Platos Fuertes</option>
+                      <option value="Sopas">Sopas</option>
+                      <option value="Extras">Extras</option>
+                    </select>
+                    <input
+                      type="number"
+                      id="newPrecioComida"
+                      placeholder="Precio..."
+                      style="margin: 0" />
+                    <button
+                      class="btn-add-product"
+                      onclick="app.crearItemSeguro('comida')"
+                      style="margin: 0; height: 100%">
+                      <span class="material-symbols-rounded">add_circle</span>
+                      AÑADIR
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECCIÓN BEBIDAS -->
+              <div
+                id="inv-bebida-section"
+                class="inventory-section">
+                <div
+                  class="inventory-list"
+                  id="inventarioBebidasList"></div>
+
+                <div
+                  class="dashboard-card"
+                  style="margin-top: 20px; padding: 20px">
+                  <h3 style="margin-top: 0; color: var(--primary)">
+                    Agregar Nueva Bebida
+                  </h3>
+                  <div class="add-product-form">
+                    <input
+                      type="text"
+                      id="newNombreBebida"
+                      placeholder="Nombre bebida..."
+                      style="margin: 0" />
+                    <select
+                      id="newSubcatBebida"
+                      style="margin: 0">
+                      <option value="Jugos">Jugos & Gaseosas</option>
+                      <option value="Cervezas">Cervezas & Alcohol</option>
+                    </select>
+                    <input
+                      type="number"
+                      id="newPrecioBebida"
+                      placeholder="Precio..."
+                      style="margin: 0" />
+                    <button
+                      class="btn-add-product"
+                      onclick="app.crearItemSeguro('bebida')"
+                      style="margin: 0; height: 100%">
+                      <span class="material-symbols-rounded">add_circle</span>
+                      AÑADIR
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer
+        style="
+          margin-top: auto;
+          padding: 100px 20px;
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+          font-size: 11px;
+          color: #94a3b8;
+          text-align: center;
+          background: #f8fafc;
+        ">
+        <p style="margin: 0 0 8px 0">Desarrollado por:</p>
+        <strong>Deyvid Javier Godoy V.</strong>
+        <br />
+        <span>v5.0.0 | Licencia Activa</span>
+      </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js').catch((err) => {
+          console.log('Service Worker registration failed:', err);
+        });
+      }
+    </script>
+  </body>
+</html>
